@@ -16,9 +16,9 @@ set -euo pipefail
 # =============================================================================
 
 # --- CONFIGURATION ---
-BIGSTITCHER_DIR="/~/BigStitcher-Spark/BigStitcher-Spark_Keck_optimized"
-FIJI_BIN="/~/BigStitcher-Spark/FIJI/Fiji.app/ImageJ-linux64"
-MACRO_PATH="/~/load_dataset.ijm"
+BIGSTITCHER_DIR="/~/BigStitcher/BigStitcher-Spark_Keck_optimized"
+FIJI_BIN="/~/BigStitcher/FIJI/Fiji.app/ImageJ-linux64"
+FIJI_MACRO_PATH="${BIGSTITCHER_DIR}/load_dataset.ijm"
 
 
 RUN_IP_REGISTRATION=false
@@ -57,7 +57,7 @@ echo "STEP 1: Defining Dataset via ImageJ Macro..."
 echo "------------------------------------------------"
 
 # Run Fiji headless
-$FIJI_BIN --headless --console -macro "$MACRO_PATH" "$CZI_FILE $XML_NAME"
+$FIJI_BIN --headless --console -macro "$FIJI_MACRO_PATH" "$CZI_FILE $XML_NAME"
 
 echo "==========================================="
 echo " BigStitcher Pipeline (Server): $XML_PATH"
