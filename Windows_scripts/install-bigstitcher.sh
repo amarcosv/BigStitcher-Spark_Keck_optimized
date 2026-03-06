@@ -14,7 +14,7 @@ echo "  3. Apache Maven 3.9.9"
 echo "  4. BigStitcher-Spark (clone + build)"
 echo "  5. FIJI"
 echo "  6. BigStitcher-Spark_Keck_optimized scripts"
-echo "  7. Launch FIJI for BigStitcher plugin installation"
+echo "  7. Install BigStitcher plugin via FIJI headless update"
 echo ""
 echo "Note: Step 5 (Maven build) downloads many dependencies and may take 10-20 minutes."
 echo ""
@@ -127,26 +127,26 @@ chmod +x ~/BigStitcher/BigStitcher-Spark_Keck_optimized/BigStitcher_scripts/*
 echo "Done."
 
 
-# --- Final: Launch FIJI for BigStitcher plugin installation ---
+# --- Step 7: Install BigStitcher plugin via FIJI headless update ---
+echo ""
+echo "[7/7] Installing BigStitcher plugin..."
+
+FIJI_BIN="$HOME/BigStitcher/FIJI/Fiji.app/ImageJ-linux64"
+
+"$FIJI_BIN" --headless --update add-update-site "BigStitcher" "https://sites.imagej.net/BigStitcher/"
+"$FIJI_BIN" --headless --update update
+
+echo "Done. BigStitcher plugin installed."
+
+
+# --- Installation complete ---
 echo ""
 echo "========================================================"
 echo "  Installation complete!"
 echo "========================================================"
 echo ""
 echo "Directory structure:"
-echo "  ~/BigStitcher/BigStitcher-Spark/                            <- BigStitcher-Spark executables"
-echo "  ~/BigStitcher/BigStitcher-Spark_Keck_optimized/             <- Keck repo"
+echo "  ~/BigStitcher/BigStitcher-Spark/                                     <- BigStitcher-Spark executables"
+echo "  ~/BigStitcher/BigStitcher-Spark_Keck_optimized/                      <- Keck repo"
 echo "  ~/BigStitcher/BigStitcher-Spark_Keck_optimized/BigStitcher_scripts/  <- pipeline scripts"
-echo "  ~/BigStitcher/FIJI/Fiji.app/                                <- FIJI"
-echo ""
-echo "=== FIJI: BigStitcher Plugin Installation ==="
-echo ""
-echo "FIJI will now open. Please install the BigStitcher plugin:"
-echo "  1. Go to  Help > Update..."
-echo "  2. Click  'Manage Update Sites'"
-echo "  3. Find and check  'BigStitcher'"
-echo "  4. Click  'Close', then 'Apply Changes'"
-echo "  5. Restart FIJI when prompted"
-echo ""
-read -p "Press Enter to launch FIJI..."
-~/BigStitcher/FIJI/Fiji.app/fiji-linux-x64
+echo "  ~/BigStitcher/FIJI/Fiji.app/                                         <- FIJI"
