@@ -66,7 +66,7 @@ echo "==========================================="
 # Step 1: Resave to N5
 echo ""
 echo "[$(date +%H:%M:%S)] Step 1/8: Resaving to N5..."
-"$BIGSTITCHER_DIR"/resave_spark_optimized_server \
+"$BIGSTITCHER_DIR"/resave_spark_server \
     -x "$XML_PATH" -xo "$XML_PATH" \
     --blockSize="${RESAVE_BLOCK_SIZE}" --blockScale="${RESAVE_BLOCK_SCALE}" --N5
 
