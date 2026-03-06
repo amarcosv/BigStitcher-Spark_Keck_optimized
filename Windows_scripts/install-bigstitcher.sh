@@ -13,16 +13,17 @@ echo "  2. Java JDK 8 (Zulu 8.92 with JavaFX)"
 echo "  3. Apache Maven 3.9.9"
 echo "  4. BigStitcher-Spark (clone + build)"
 echo "  5. FIJI"
-echo "  6. Launch FIJI for BigStitcher plugin installation"
+echo "  6. BigStitcher-Spark_Keck_optimized scripts"
+echo "  7. Launch FIJI for BigStitcher plugin installation"
 echo ""
-echo "Note: Step 4 (Maven build) downloads many dependencies and may take 10-20 minutes."
+echo "Note: Step 5 (Maven build) downloads many dependencies and may take 10-20 minutes."
 echo ""
 read -p "Press Enter to start or Ctrl+C to cancel..."
 
 
 # --- Step 1: System prerequisites ---
 echo ""
-echo "[1/6] Installing system prerequisites..."
+echo "[1/7] Installing system prerequisites..."
 sudo apt update
 sudo apt install -y git wget unzip cifs-utils
 echo "Done."
@@ -30,7 +31,7 @@ echo "Done."
 
 # --- Step 2: Java JDK 8 (Zulu with JavaFX) ---
 echo ""
-echo "[2/6] Installing Java JDK 8 (Zulu)..."
+echo "[2/7] Installing Java JDK 8 (Zulu)..."
 
 JAVA_TAR="zulu8.92.0.21-ca-fx-jdk8.0.482-linux_x64.tar.gz"
 JAVA_URL="https://cdn.azul.com/zulu/bin/$JAVA_TAR"
@@ -46,7 +47,7 @@ echo "Done. Java installed at /usr/lib/jvm/zulu-8"
 
 # --- Step 3: Apache Maven 3.9.9 ---
 echo ""
-echo "[3/6] Installing Apache Maven 3.9.9..."
+echo "[3/7] Installing Apache Maven 3.9.9..."
 
 MAVEN_VERSION="3.9.9"
 MAVEN_TAR="apache-maven-${MAVEN_VERSION}-bin.tar.gz"
@@ -61,7 +62,7 @@ echo "Done. Maven installed at /opt/maven"
 
 # --- Step 4: Add Java and Maven to .bashrc ---
 echo ""
-echo "[4/6] Configuring .bashrc..."
+echo "[4/7] Configuring .bashrc..."
 
 cat >> ~/.bashrc << 'BASHRC'
 
@@ -89,7 +90,7 @@ echo "  mvn:   $(mvn -version 2>&1 | head -1)"
 
 # --- Step 5: Clone and build BigStitcher-Spark ---
 echo ""
-echo "[5/6] Cloning and building BigStitcher-Spark..."
+echo "[5/7] Cloning and building BigStitcher-Spark..."
 echo "(This will take 10-20 minutes on first run — Maven downloads all dependencies)"
 echo ""
 
@@ -104,7 +105,7 @@ echo "Done. Executables installed in ~/BigStitcher/BigStitcher-Spark/"
 
 # --- Step 6: Download and install FIJI ---
 echo ""
-echo "[6/6] Downloading FIJI..."
+echo "[6/7] Downloading FIJI..."
 
 FIJI_ZIP="fiji-stable-linux64-jdk.zip"
 FIJI_URL="https://downloads.imagej.net/fiji/stable/$FIJI_ZIP"
@@ -116,6 +117,16 @@ rm "/tmp/$FIJI_ZIP"
 echo "Done. FIJI installed at ~/BigStitcher/FIJI/Fiji.app/"
 
 
+# --- Step 7: Clone Keck scripts ---
+echo ""
+echo "[7/7] Cloning BigStitcher-Spark_Keck_optimized..."
+
+git clone https://github.com/amarcosv/BigStitcher-Spark_Keck_optimized.git \
+    ~/BigStitcher/BigStitcher-Spark_Keck_optimized
+chmod +x ~/BigStitcher/BigStitcher-Spark_Keck_optimized/BigStitcher_scripts/*
+echo "Done."
+
+
 # --- Final: Launch FIJI for BigStitcher plugin installation ---
 echo ""
 echo "========================================================"
@@ -123,9 +134,10 @@ echo "  Installation complete!"
 echo "========================================================"
 echo ""
 echo "Directory structure:"
-echo "  ~/BigStitcher/BigStitcher-Spark/                ← BigStitcher-Spark executables"
-echo "  ~/BigStitcher/BigStitcher-Spark_Keck_optimized/ ← Keck custom scripts"
-echo "  ~/BigStitcher/FIJI/Fiji.app/                    ← FIJI"
+echo "  ~/BigStitcher/BigStitcher-Spark/                            <- BigStitcher-Spark executables"
+echo "  ~/BigStitcher/BigStitcher-Spark_Keck_optimized/             <- Keck repo"
+echo "  ~/BigStitcher/BigStitcher-Spark_Keck_optimized/BigStitcher_scripts/  <- pipeline scripts"
+echo "  ~/BigStitcher/FIJI/Fiji.app/                                <- FIJI"
 echo ""
 echo "=== FIJI: BigStitcher Plugin Installation ==="
 echo ""

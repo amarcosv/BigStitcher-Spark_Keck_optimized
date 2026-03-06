@@ -16,7 +16,7 @@ set -euo pipefail
 # =============================================================================
 
 # --- CONFIGURATION ---
-BIGSTITCHER_DIR="$HOME/BigStitcher/BigStitcher-Spark_Keck_optimized"
+BIGSTITCHER_DIR="$HOME/BigStitcher/BigStitcher-Spark_Keck_optimized/BigStitcher_scripts"
 FIJI_BIN="$HOME/BigStitcher/FIJI/Fiji.app/ImageJ-linux64"
 FIJI_MACRO_PATH="${BIGSTITCHER_DIR}/load_dataset.ijm"
 

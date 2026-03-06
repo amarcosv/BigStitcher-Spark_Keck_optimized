@@ -3,7 +3,11 @@
     "allow": [
       "Bash(ls -lh /home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized/*.bat /home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized/*.ps1 /home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized/*.sh)",
       "Bash(powershell.exe -Command \":*)",
-      "WebFetch(domain:archive.apache.org)"
+      "WebFetch(domain:archive.apache.org)",
+      "Bash(cd \"//wsl.localhost/Ubuntu/home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized\")",
+      "Bash(git mv install-bigstitcher.bat install-bigstitcher.ps1 install-bigstitcher.sh setup_linux_environment.bat setup_linux_environment.ps1 run-stitching.bat run-stitching.ps1 connect-server.bat connect-server.ps1 Windows_scripts/)",
+      "Bash(echo \"ERROR: $?\")",
+      "Bash(git mv stitch_dataset_IP_server.sh load_dataset.ijm resave_spark resave_spark_local resave_spark_server stitching_spark stitching_spark_local stitching_spark_server solver_spark solver_spark_local solver_spark_server detect-interestpoints_spark detect-interestpoints_spark_local detect-interestpoints_spark_server match-interestpoints_spark match-interestpoints_spark_local match-interestpoints_spark_server create-fusion-container_spark_local create-fusion-container_spark_server affine-fusion_spark affine-fusion_spark_local affine-fusion_spark_server BigStitcher_scripts/)"
     ]
   }
 }

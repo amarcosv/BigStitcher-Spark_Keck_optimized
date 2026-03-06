@@ -108,7 +108,7 @@ Write-Host ""
 
 # --- Run stitching script ---
 wsl -d $DistroName -u $LinuxUser -- bash `
-    ~/BigStitcher/BigStitcher-Spark_Keck_optimized/stitch_dataset_IP_server.sh `
+    ~/BigStitcher/BigStitcher-Spark_Keck_optimized/BigStitcher_scripts/stitch_dataset_IP_server.sh `
     "$($czi.WslPath)" "$xmlName"
 
 if ($LASTEXITCODE -eq 0) {
