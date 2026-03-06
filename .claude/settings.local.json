@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -lh /home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized/*.bat /home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized/*.ps1 /home/amarcosv/BigStitcher/BigStitcher-Spark_Keck_optimized/*.sh)",
+      "Bash(powershell.exe -Command \":*)",
+      "WebFetch(domain:archive.apache.org)"
+    ]
+  }
+}

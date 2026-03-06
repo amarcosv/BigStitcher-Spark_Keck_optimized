@@ -21,6 +21,11 @@ FIJI_BIN="$HOME/BigStitcher/FIJI/Fiji.app/ImageJ-linux64"
 FIJI_MACRO_PATH="${BIGSTITCHER_DIR}/load_dataset.ijm"
 
 
+# Ensure Java is on PATH (required when running in non-interactive WSL shells,
+# where .bashrc is not sourced)
+export JAVA_HOME="/usr/lib/jvm/zulu-8"
+export PATH="$JAVA_HOME/bin:$PATH"
+
 RUN_IP_REGISTRATION=false
 # Interest point detection parameters (tune these for your data)
 IP_LABEL="beads"
