@@ -40,9 +40,9 @@ IP_MAX_SPOTS=10000
 # Block parameters (optimized for 1 Gbps network + 2:1 XY:Z anisotropy)
 # 256x256x128 = 16 MB/block: large enough to amortize network latency
 RESAVE_BLOCK_SIZE="256,256,128"
-RESAVE_BLOCK_SCALE="8,8,1"
+RESAVE_BLOCK_SCALE="2,2,1"
 FUSION_BLOCK_SIZE="256,256,128"
-FUSION_BLOCK_SCALE="8,8,1"
+FUSION_BLOCK_SCALE="2,2,1"
 
 # --- INPUT ---
 if [ -z "${1:-}" ] || [ -z "${2:-}" ]; then
@@ -62,53 +62,56 @@ echo "STEP 1: Defining Dataset via ImageJ Macro..."
 echo "------------------------------------------------"
 
 # Run Fiji headless
-$FIJI_BIN --headless --console -macro "$FIJI_MACRO_PATH" "$CZI_FILE $XML_NAME"
+# $FIJI_BIN --headless --console -macro "$FIJI_MACRO_PATH" "$CZI_FILE $XML_NAME"
 
 echo "==========================================="
 echo " BigStitcher Pipeline (Server): $XML_PATH"
 echo "==========================================="
 
 # Step 1: Resave to N5
-echo ""
-echo "[$(date +%H:%M:%S)] Step 1/8: Resaving to N5..."
-"$BIGSTITCHER_DIR"/resave_spark_server \
-    -x "$XML_PATH" -xo "$XML_PATH" \
-    --blockSize="${RESAVE_BLOCK_SIZE}" --blockScale="${RESAVE_BLOCK_SCALE}" -o "${DATASET_PATH}/${XML_NAME}.ome.zarr"
+# echo ""
+# echo "[$(date +%H:%M:%S)] Step 1/8: Resaving to N5..."
+# "$BIGSTITCHER_DIR"/resave_spark_server \
+    # -x "$XML_PATH" -xo "$XML_PATH" \
+    # --blockSize="${RESAVE_BLOCK_SIZE}" --blockScale="${RESAVE_BLOCK_SCALE}" -o "${DATASET_PATH}/${XML_NAME}.ome.zarr"
 
 # Step 2: Pairwise stitching (phase correlation, translation only)
-echo ""
-echo "[$(date +%H:%M:%S)] Step 2/8: Pairwise stitching..."
-"$BIGSTITCHER_DIR"/stitching_spark_server -x "$XML_PATH"
+# echo ""
+# echo "[$(date +%H:%M:%S)] Step 2/8: Pairwise stitching..."
+"$BIGSTITCHER_DIR"/stitching_spark_server -x "$XML_PATH" --maxShiftX=100 --maxShiftY=100
 
 # Step 3: Solve (translation only, from stitching)
 echo ""
 echo "[$(date +%H:%M:%S)] Step 3/8: Solving (translation from stitching)..."
-"$BIGSTITCHER_DIR"/solver_spark_server -x "$XML_PATH" -s STITCHING
+"$BIGSTITCHER_DIR"/solver_spark_server -x "$XML_PATH" -s STITCHING -tm TRANSLATION -rm NONE
 
 if $RUN_IP_REGISTRATION; then
 	# Step 4: Detect interest points in overlap regions
 	echo ""
 	echo "[$(date +%H:%M:%S)] Step 4/8: Detecting interest points..."
-	"$BIGSTITCHER_DIR"/detect-interestpoints_spark_server \
-		-x "$XML_PATH" \
-		-l "$IP_LABEL" \
-		-s "$IP_SIGMA" \
-		-t "$IP_THRESHOLD" \
-		--minIntensity "$IP_MIN_INTENSITY" \
-		--maxIntensity "$IP_MAX_INTENSITY" \
-		--downsampleXY "$IP_DOWNSAMPLE_XY" \
-		--downsampleZ "$IP_DOWNSAMPLE_Z" \
-		--overlappingOnly \
-		--maxSpots "$IP_MAX_SPOTS"
+	# "$BIGSTITCHER_DIR"/detect-interestpoints_spark_server \
+		# -x "$XML_PATH" \
+		# -l "$IP_LABEL" \
+		# -s "$IP_SIGMA" \
+		# -t "$IP_THRESHOLD" \
+		# --minIntensity "$IP_MIN_INTENSITY" \
+		# --maxIntensity "$IP_MAX_INTENSITY" \
+		# --downsampleXY "$IP_DOWNSAMPLE_XY" \
+		# --downsampleZ "$IP_DOWNSAMPLE_Z" \
+		# --overlappingOnly \
+		# --maxSpots "$IP_MAX_SPOTS"
 
 	# Step 5: Match interest points (with rotation correction)
 	echo ""
-	echo "[$(date +%H:%M:%S)] Step 5/8: Matching interest points (FAST_ROTATION)..."
-	"$BIGSTITCHER_DIR"/match-interestpoints_spark_server \
-		-x "$XML_PATH" \
-		-l "$IP_LABEL" \
-		-m FAST_ROTATION \
-		--clearCorrespondences
+	# echo "[$(date +%H:%M:%S)] Step 5/8: Matching interest points (FAST_ROTATION)..."
+	# "$BIGSTITCHER_DIR"/match-interestpoints_spark_server \
+		# -x "$XML_PATH" \
+		# -l "$IP_LABEL" \
+		# -m ICP \
+		# -tm RIGID -rm TRANSLATION --lambda 0.10 \
+		# -ime 5.0 -iit 200 --icpUseRANSAC \
+		# -rme 2.5 -rmni 12 \
+		# --clearCorrespondences
 
 	# Step 6: Solve (IP-based, corrects small rotations)
 	echo ""
@@ -117,24 +120,26 @@ if $RUN_IP_REGISTRATION; then
 		-x "$XML_PATH" \
 		-s IP \
 		-l "$IP_LABEL" \
-		--method TWO_ROUND_ITERATIVE
+		--method ONE_ROUND_ITERATIVE \
+		-tm RIGID -rm TRANSLATION --lambda 0.10 \
+		--relativeThreshold 3.5 --absoluteThreshold 7.0
 fi
 # Step 7: Create fusion container
-echo ""
-echo "[$(date +%H:%M:%S)] Step 7/8: Creating fusion container..."
-"$BIGSTITCHER_DIR"/create-fusion-container_spark_server \
-    -x "$XML_PATH" \
-    -o "$OUTPUT_ZARR" \
-    --preserveAnisotropy --multiRes -d UINT16 \
-    --bdv -xo "${DATASET_PATH}/${XML_NAME}_fused.xml" -s ZARR \
-    --blockSize "${FUSION_BLOCK_SIZE}"
+# echo ""
+# echo "[$(date +%H:%M:%S)] Step 7/8: Creating fusion container..."
+# "$BIGSTITCHER_DIR"/create-fusion-container_spark_server \
+    # -x "$XML_PATH" \
+    # -o "$OUTPUT_ZARR" \
+    # --preserveAnisotropy --multiRes -d UINT16 \
+    # --bdv -xo "${DATASET_PATH}/${XML_NAME}_fused.xml" -s ZARR \
+    # --blockSize "${FUSION_BLOCK_SIZE}"
 
 # Step 8: Affine fusion
-echo ""
-echo "[$(date +%H:%M:%S)] Step 8/8: Affine fusion..."
-"$BIGSTITCHER_DIR"/affine-fusion_spark_server \
-    -o "$OUTPUT_ZARR" \
-    --blockScale "${FUSION_BLOCK_SCALE}"
+# echo ""
+# echo "[$(date +%H:%M:%S)] Step 8/8: Affine fusion..."
+# "$BIGSTITCHER_DIR"/affine-fusion_spark_server \
+    # -o "$OUTPUT_ZARR" \
+    # --blockScale "${FUSION_BLOCK_SCALE}"
 
 echo ""
 echo "[$(date +%H:%M:%S)] ==========================================="

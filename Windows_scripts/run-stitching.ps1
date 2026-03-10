@@ -88,7 +88,7 @@ if ($LASTEXITCODE -ne 0) {
     $mountPoint = "/mnt/$($czi.Share)"
     $keckUid    = wsl -d $DistroName -u $LinuxUser -- id -u
     $keckGid    = wsl -d $DistroName -u $LinuxUser -- id -g
-    $mountOpts  = "username=$mountUser,password=$mountPassPlain,vers=3.0,rsize=4194304,wsize=4194304,cache=loose,actimeo=60,uid=$keckUid,gid=$keckGid"
+    $mountOpts  = "username=$mountUser,password=$mountPassPlain,vers=3.11,rsize=4194304,wsize=4194304,cache=loose,actimeo=60,uid=$keckUid,gid=$keckGid"
 
     wsl -d $DistroName -u $LinuxUser -- bash -c "sudo mkdir -p '$mountPoint' && sudo mount -t cifs '$serverPath' '$mountPoint' -o '$mountOpts'"
 
